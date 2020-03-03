@@ -68,7 +68,7 @@ public class Order {
 			totalItems += totalItem;
 		}
 
-		if (this.deliveryCountry == "USA"){
+		if (isDeliveryUSA()){
 			// total=totalItems + tax + 0 shipping
 			return totalItems + totalItems * 5 / 100;
 		}
@@ -77,8 +77,12 @@ public class Order {
 		return totalItems + totalItems * 5 / 100 + 15;
 	}
 
+	private boolean isDeliveryUSA() {
+		return this.deliveryCountry == "USA";
+	}
+
 	private float totalItemToCloathing(OrderItem item, float totalItem, float itemAmount) {
-		if (item.getProduct().getCategory() == ProductCategory.Cloathing) {
+		if (isCloathing(item)) {
 			float cloathingDiscount = 0;
 			
 			if (item.getQuantity() > 2) {
@@ -89,16 +93,24 @@ public class Order {
 		return totalItem;
 	}
 
+	private boolean isCloathing(OrderItem item) {
+		return item.getProduct().getCategory() == ProductCategory.Cloathing;
+	}
+
 	private float totalItemToBikes(OrderItem item, float totalItem, float itemAmount) {
-		if (item.getProduct().getCategory() == ProductCategory.Bikes) {
+		if (isBike(item)) {
 			// 20% discount for Bikes
 			totalItem = itemAmount - itemAmount * 20 / 100;
 		}
 		return totalItem;
 	}
 
+	private boolean isBike(OrderItem item) {
+		return item.getProduct().getCategory() == ProductCategory.Bikes;
+	}
+
 	private float totalItemToAccessories(OrderItem item, float totalItem, float itemAmount) {
-		if (item.getProduct().getCategory() == ProductCategory.Accessories) {
+		if (isAccessorie(item)) {
 			float booksDiscount = 0;
 			if (itemAmount >= 100) {
 				booksDiscount = itemAmount * 10 / 100;
@@ -106,6 +118,10 @@ public class Order {
 			totalItem = itemAmount - booksDiscount;
 		}
 		return totalItem;
+	}
+
+	private boolean isAccessorie(OrderItem item) {
+		return item.getProduct().getCategory() == ProductCategory.Accessories;
 	}
 
 	private float calculateItemAmount(OrderItem item) {
