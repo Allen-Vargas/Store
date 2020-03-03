@@ -53,7 +53,7 @@ public class Order {
 		return items;
 	}
 
-	public float total() {
+	public float calculateTotalItems() {
 		float totalItems = 0;
 		
 		for (OrderItem item : items) {
