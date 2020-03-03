@@ -6,6 +6,7 @@ import java.util.Set;
 
 public class Order {
 
+	private static final int _Shipping = 15;
 	private Customer customer;
 	private Salesman salesman;
 	private Date orderedOn;
@@ -59,10 +60,8 @@ public class Order {
 			float totalItem=0;
 			float itemAmount = calculateItemAmount(item);
 			
-			totalItem = totalItemToAccessories(item, totalItem, itemAmount);
-			
+			totalItem = totalItemToAccessories(item, totalItem, itemAmount);	
 			totalItem = totalItemToBikes(item, totalItem, itemAmount);
-			
 			totalItem = totalItemToCloathing(item, totalItem, itemAmount);
 			
 			totalItems += totalItem;
@@ -74,7 +73,7 @@ public class Order {
 		}
 
 		// total=totalItemst + tax + 15 shipping
-		return totalItems + totalItems * 5 / 100 + 15;
+		return totalItems + totalItems * 5 / 100 + _Shipping;
 	}
 
 	private boolean isDeliveryUSA() {
@@ -83,14 +82,17 @@ public class Order {
 
 	private float totalItemToCloathing(OrderItem item, float totalItem, float itemAmount) {
 		if (isCloathing(item)) {
-			float cloathingDiscount = 0;
-			
-			if (item.getQuantity() > 2) {
-				cloathingDiscount = item.getProduct().getUnitPrice();
-			}
+			float cloathingDiscount;
+			cloathingDiscount = calculateCloathingDiscount(item);
 			totalItem = itemAmount - cloathingDiscount;
 		}
 		return totalItem;
+	}
+
+	private float calculateCloathingDiscount(OrderItem item) {
+		if (item.getQuantity() > 2) 
+			return item.getProduct().getUnitPrice();
+		return 0;
 	}
 
 	private boolean isCloathing(OrderItem item) {
@@ -98,11 +100,13 @@ public class Order {
 	}
 
 	private float totalItemToBikes(OrderItem item, float totalItem, float itemAmount) {
-		if (isBike(item)) {
-			// 20% discount for Bikes
-			totalItem = itemAmount - itemAmount * 20 / 100;
-		}
+		if (isBike(item)) 
+			totalItem = itemAmount - discount20Porcent(itemAmount);
 		return totalItem;
+	}
+
+	private float discount20Porcent(float itemAmount) {
+		return itemAmount * 20 / 100;
 	}
 
 	private boolean isBike(OrderItem item) {
