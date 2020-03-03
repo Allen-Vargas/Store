@@ -81,11 +81,8 @@ public class Order {
 	}
 
 	private float totalItemToCloathing(OrderItem item, float totalItem, float itemAmount) {
-		if (isCloathing(item)) {
-			float cloathingDiscount;
-			cloathingDiscount = calculateCloathingDiscount(item);
-			totalItem = itemAmount - cloathingDiscount;
-		}
+		if (isCloathing(item)) 
+			totalItem = itemAmount - calculateCloathingDiscount(item);
 		return totalItem;
 	}
 
@@ -114,14 +111,15 @@ public class Order {
 	}
 
 	private float totalItemToAccessories(OrderItem item, float totalItem, float itemAmount) {
-		if (isAccessorie(item)) {
-			float booksDiscount = 0;
-			if (itemAmount >= 100) {
-				booksDiscount = itemAmount * 10 / 100;
-			}
-			totalItem = itemAmount - booksDiscount;
-		}
+		if (isAccessorie(item)) 
+			totalItem = itemAmount - calculateBooksDiscount(itemAmount);
 		return totalItem;
+	}
+
+	private float calculateBooksDiscount(float itemAmount) {
+		if (itemAmount >= 100) 
+			return itemAmount * 10 / 100;
+		return 0;
 	}
 
 	private boolean isAccessorie(OrderItem item) {
