@@ -60,10 +60,13 @@ public class Order {
 			float totalItem=0;
 			float itemAmount = calculateItemAmount(item);
 			
-			totalItem = totalItemToAccessories(item, totalItem, itemAmount);	
-			totalItem = totalItemToBikes(item, totalItem, itemAmount);
-			totalItem = totalItemToCloathing(item, totalItem, itemAmount);
-			
+			if (isAccessorie(item)) 
+				totalItem = itemAmount - calculateBooksDiscount(itemAmount);
+			if (isBike(item)) 
+				totalItem = itemAmount - discount20Porcent(itemAmount);	
+			if (isCloathing(item)) 
+				totalItem = itemAmount - calculateCloathingDiscount(item);
+
 			totalItems += totalItem;
 		}
 
@@ -80,12 +83,6 @@ public class Order {
 		return this.deliveryCountry == "USA";
 	}
 
-	private float totalItemToCloathing(OrderItem item, float totalItem, float itemAmount) {
-		if (isCloathing(item)) 
-			totalItem = itemAmount - calculateCloathingDiscount(item);
-		return totalItem;
-	}
-
 	private float calculateCloathingDiscount(OrderItem item) {
 		if (item.getQuantity() > 2) 
 			return item.getProduct().getUnitPrice();
@@ -96,24 +93,12 @@ public class Order {
 		return item.getProduct().getCategory() == ProductCategory.Cloathing;
 	}
 
-	private float totalItemToBikes(OrderItem item, float totalItem, float itemAmount) {
-		if (isBike(item)) 
-			totalItem = itemAmount - discount20Porcent(itemAmount);
-		return totalItem;
-	}
-
 	private float discount20Porcent(float itemAmount) {
 		return itemAmount * 20 / 100;
 	}
 
 	private boolean isBike(OrderItem item) {
 		return item.getProduct().getCategory() == ProductCategory.Bikes;
-	}
-
-	private float totalItemToAccessories(OrderItem item, float totalItem, float itemAmount) {
-		if (isAccessorie(item)) 
-			totalItem = itemAmount - calculateBooksDiscount(itemAmount);
-		return totalItem;
 	}
 
 	private float calculateBooksDiscount(float itemAmount) {
