@@ -54,27 +54,17 @@ public class Order {
 
 	public float total() {
 		float totalItems = 0;
+		
 		for (OrderItem item : items) {
 			float totalItem=0;
 			float itemAmount = calculateItemAmount(item);
-			if (item.getProduct().getCategory() == ProductCategory.Accessories) {
-				float booksDiscount = 0;
-				if (itemAmount >= 100) {
-					booksDiscount = itemAmount * 10 / 100;
-				}
-				totalItem = itemAmount - booksDiscount;
-			}
-			if (item.getProduct().getCategory() == ProductCategory.Bikes) {
-				// 20% discount for Bikes
-				totalItem = itemAmount - itemAmount * 20 / 100;
-			}
-			if (item.getProduct().getCategory() == ProductCategory.Cloathing) {
-				float cloathingDiscount = 0;
-				if (item.getQuantity() > 2) {
-					cloathingDiscount = item.getProduct().getUnitPrice();
-				}
-				totalItem = itemAmount - cloathingDiscount;
-			}
+			
+			totalItem = totalItemToAccessories(item, totalItem, itemAmount);
+			
+			totalItem = totalItemToBikes(item, totalItem, itemAmount);
+			
+			totalItem = totalItemToCloathing(item, totalItem, itemAmount);
+			
 			totalItems += totalItem;
 		}
 
@@ -85,6 +75,37 @@ public class Order {
 
 		// total=totalItemst + tax + 15 shipping
 		return totalItems + totalItems * 5 / 100 + 15;
+	}
+
+	private float totalItemToCloathing(OrderItem item, float totalItem, float itemAmount) {
+		if (item.getProduct().getCategory() == ProductCategory.Cloathing) {
+			float cloathingDiscount = 0;
+			
+			if (item.getQuantity() > 2) {
+				cloathingDiscount = item.getProduct().getUnitPrice();
+			}
+			totalItem = itemAmount - cloathingDiscount;
+		}
+		return totalItem;
+	}
+
+	private float totalItemToBikes(OrderItem item, float totalItem, float itemAmount) {
+		if (item.getProduct().getCategory() == ProductCategory.Bikes) {
+			// 20% discount for Bikes
+			totalItem = itemAmount - itemAmount * 20 / 100;
+		}
+		return totalItem;
+	}
+
+	private float totalItemToAccessories(OrderItem item, float totalItem, float itemAmount) {
+		if (item.getProduct().getCategory() == ProductCategory.Accessories) {
+			float booksDiscount = 0;
+			if (itemAmount >= 100) {
+				booksDiscount = itemAmount * 10 / 100;
+			}
+			totalItem = itemAmount - booksDiscount;
+		}
+		return totalItem;
 	}
 
 	private float calculateItemAmount(OrderItem item) {
