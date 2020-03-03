@@ -56,7 +56,7 @@ public class Order {
 		float totalItems = 0;
 		for (OrderItem item : items) {
 			float totalItem=0;
-			float itemAmount = item.getProduct().getUnitPrice() * item.getQuantity();
+			float itemAmount = calculateItemAmount(item);
 			if (item.getProduct().getCategory() == ProductCategory.Accessories) {
 				float booksDiscount = 0;
 				if (itemAmount >= 100) {
@@ -85,5 +85,9 @@ public class Order {
 
 		// total=totalItemst + tax + 15 shipping
 		return totalItems + totalItems * 5 / 100 + 15;
+	}
+
+	private float calculateItemAmount(OrderItem item) {
+		return item.getProduct().getUnitPrice() * item.getQuantity();
 	}
 }
